@@ -1,9 +1,11 @@
 import sqlite3
 import os.path
 import datetime
+import threading
 
 sqlite_file = 'databaseFiles/peternote.sqlite'    # name of the sqlite database file
 table_name = 'my_notes'  # name of the table to be created
+
 
 
 
@@ -39,4 +41,14 @@ def upsert(user_data):
  	c.execute('INSERT INTO my_notes( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':user_data, 'thetimestamp':datetime.datetime.now()})
 	conn.commit()
 	conn.close()
-	print(user_data)	
+	print(user_data)
+
+
+def f():
+    # do something here ...
+    # call f() again in 60 seconds
+    print("running\n")
+    threading.Timer(5, f).start()
+
+# start calling f now and every 60 sec thereafter
+f()
