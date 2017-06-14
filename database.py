@@ -1,15 +1,10 @@
 import sqlite3
 import os.path
 import datetime
-import threading
 
 sqlite_file = 'databaseFiles/peternote.sqlite'    # name of the sqlite database file
 current_note_table = 'current_note'  # name of the table to be created
 notes_table = 'notes_table';
-
-
-
-
 
 if not os.path.exists(sqlite_file):
 	os.mkdir('databaseFiles')
@@ -49,7 +44,7 @@ def read_one():
 	conn.close()
 	if response:
 		return response[0]
-	return 'Empty'	
+	return ''	
 
 def upsert(user_data):
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
@@ -62,15 +57,19 @@ def upsert(user_data):
 
 def save_current_note():
 	current_note = read_one()
-	#formated_note = '<begin_note>' + current_note + '<end_note>'
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
- 	c.execute('INSERT INTO notes_table( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':current_note, 'thetimestamp':datetime.datetime.now()})
+	if current_note != '':
+	 	c.execute('INSERT INTO notes_table( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':current_note, 'thetimestamp':datetime.datetime.now()})
+	else:
+		print("nothing to save")
+ 	
  	c.execute('DROP TABLE current_note');
  	c.execute('VACUUM')
 	conn.commit()
 	conn.close()
+	
 
 def get_notes(limit=0):
 	sqlite_file = 'databaseFiles/peternote.sqlite' 

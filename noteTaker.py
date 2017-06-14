@@ -8,10 +8,6 @@ root.configure(background='#fefbae')
 def key(key):
 	database.upsert(text.get("end_notes", END))
 
-def get_input():
-	inputValue = text.get("1.0", "end")
-	#print(inputValue)
-
 def closing_action():
   print("Im dying")
   database.save_current_note()
