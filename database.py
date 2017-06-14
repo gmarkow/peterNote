@@ -11,6 +11,7 @@ table_name = 'my_notes'  # name of the table to be created
 
 
 if not os.path.exists(sqlite_file):
+	os.mkdir('databaseFiles')
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
 	c.execute('CREATE TABLE {tn} ({nf} {ft})'\
