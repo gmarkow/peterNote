@@ -3,10 +3,12 @@ import database
 
 root = Tk()
 root.geometry("600x600")
+root.configure(background='#fefbae')
 def key(key):
 	database.upsert(text.get(1.0, END))
 
 text = Text(root)
+text.configure(background='#fefbae')
 if database.read_one():
 	text.insert(END, database.read_one())
 else:
