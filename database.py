@@ -4,7 +4,8 @@ import datetime
 import threading
 
 sqlite_file = 'databaseFiles/peternote.sqlite'    # name of the sqlite database file
-table_name = 'my_notes'  # name of the table to be created
+current_note_table = 'current_note'  # name of the table to be created
+notes_table = 'notes_table';
 
 
 
@@ -14,20 +15,35 @@ if not os.path.exists(sqlite_file):
 	os.mkdir('databaseFiles')
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
+
+		
 	c.execute('CREATE TABLE {tn} ({nf} {ft})'\
-	        .format(tn=table_name, nf='index1', ft='INTEGER PRIMARY KEY AUTOINCREMENT'))
+	        .format(tn=notes_table, nf='index1', ft='INTEGER PRIMARY KEY AUTOINCREMENT'))
 	c.execute("ALTER TABLE {tn} ADD COLUMN '{cn}' {ct}"\
-	        .format(tn=table_name, cn='content', ct='STRING'))
+	        .format(tn=notes_table, cn='content', ct='STRING'))
 	c.execute("ALTER TABLE {tn} ADD COLUMN '{cn}' {ct}"\
-        .format(tn=table_name, cn='date_time', ct='DATETIME CURRENT_TIMESTAMP'))
+        .format(tn=notes_table, cn='date_time', ct='DATETIME CURRENT_TIMESTAMP'))
 	conn.commit()
 	conn.close()
+
+def create_current_note():
+	conn = sqlite3.connect(sqlite_file)
+	c = conn.cursor()
+	c.execute('CREATE TABLE {tn} ({nf} {ft})'\
+	        .format(tn=current_note_table, nf='index1', ft='INTEGER PRIMARY KEY AUTOINCREMENT'))
+	c.execute("ALTER TABLE {tn} ADD COLUMN '{cn}' {ct}"\
+	        .format(tn=current_note_table, cn='content', ct='STRING'))
+	c.execute("ALTER TABLE {tn} ADD COLUMN '{cn}' {ct}"\
+        .format(tn=current_note_table, cn='date_time', ct='DATETIME CURRENT_TIMESTAMP'))
+	conn.commit()
+	conn.close()
+
 
 def read_one():
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
-	c.execute('''SELECT content FROM my_notes ORDER BY index1 DESC LIMIT 1''')
+	c.execute('''SELECT content FROM current_note ORDER BY index1 DESC LIMIT 1''')
 	response = c.fetchone()
 	conn.commit()
 	conn.close()
@@ -39,12 +55,29 @@ def upsert(user_data):
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
- 	c.execute('INSERT INTO my_notes( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':user_data, 'thetimestamp':datetime.datetime.now()})
+ 	c.execute('INSERT INTO current_note( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':user_data, 'thetimestamp':datetime.datetime.now()})
 	conn.commit()
 	conn.close()
-	print(user_data)
+	#print(user_data)
 
+def save_current_note():
+	current_note = read_one()
+	#formated_note = '<begin_note>' + current_note + '<end_note>'
+	sqlite_file = 'databaseFiles/peternote.sqlite' 
+	conn = sqlite3.connect(sqlite_file)
+	c = conn.cursor()
+ 	c.execute('INSERT INTO notes_table( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':current_note, 'thetimestamp':datetime.datetime.now()})
+ 	c.execute('DROP TABLE current_note');
+ 	c.execute('VACUUM')
+	conn.commit()
+	conn.close()
 
-def f():
-    print("running\n")
-    threading.Timer(2, f).start()
+def get_notes(limit=0):
+	sqlite_file = 'databaseFiles/peternote.sqlite' 
+	conn = sqlite3.connect(sqlite_file)
+	c = conn.cursor()
+	c.execute('SELECT content FROM notes_table ORDER BY index1 DESC ')
+	response = c.fetchall()
+	conn.commit()
+	conn.close()
+	return response
