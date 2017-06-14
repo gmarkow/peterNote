@@ -23,4 +23,5 @@ def get_input():
 buttonCommit = Button(root, height=1, width=10, text="Print-it", command=lambda: database.upsert(text.get("1.0", "end")))
 buttonCommit.pack()
 
+database.f()
 root.mainloop()

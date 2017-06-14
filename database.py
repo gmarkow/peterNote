@@ -46,10 +46,5 @@ def upsert(user_data):
 
 
 def f():
-    # do something here ...
-    # call f() again in 60 seconds
     print("running\n")
-    threading.Timer(5, f).start()
-
-# start calling f now and every 60 sec thereafter
-f()
+    threading.Timer(2, f).start()
