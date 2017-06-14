@@ -19,9 +19,14 @@ def get_input():
 	inputValue = text.get("1.0", "end")
 	print(inputValue)
 
+def closing_action():
+  print("Im dying")
+  root.destroy()
 
 buttonCommit = Button(root, height=1, width=10, text="Print-it", command=lambda: database.upsert(text.get("1.0", "end")))
 buttonCommit.pack()
 
-database.f()
+#database.f()
+
+root.protocol("WM_DELETE_WINDOW", closing_action)
 root.mainloop()
