@@ -18,7 +18,7 @@ root.update_idletasks()
 root.overrideredirect(1)
 
 thex = u"\u00D7";
-close = Button(root, text = thex, command = lambda: root.destroy()).pack(side=RIGHT)
+close = Button(root, text = thex, command = lambda: closing_action()).pack(side=RIGHT)
 
 def closing_action():
   print("Im dying")
