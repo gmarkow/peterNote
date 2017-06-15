@@ -33,11 +33,12 @@ def render_notes():
   text.mark_gravity("end_notes", LEFT)
 
 def handle(event):
-    event.widget.insert(END, event.data)
-    content = text.get("0.0", END)
-    filename = content.split()
-    key('ba')
-    print(filename)
+    file_path = event.data[1:-1]
+    file_extension = os.path.splitext(file_path)
+    if file_extension[1] == '.jpg':
+      print("im a picture")
+    else:
+      print(file_path)
 
 text = Text(root)
 
