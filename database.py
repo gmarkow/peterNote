@@ -53,10 +53,9 @@ def upsert(user_data):
  	c.execute('INSERT INTO current_note( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':user_data, 'thetimestamp':datetime.datetime.now()})
 	conn.commit()
 	conn.close()
-	#print(user_data)
 
-def save_current_note():
-	current_note = read_one()
+def save_current_note(current_note):
+	#current_note = read_one()
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()

@@ -11,12 +11,10 @@ dnd = TkDND(root)
 
 root.geometry("600x600")
 root.configure(background='#fefbae')
-def key(key):
-	database.upsert(text.get("end_notes", END))
 
 def closing_action():
   print("Im dying")
-  database.save_current_note()
+  database.save_current_note(text.get("end_notes", END))
   root.destroy()
 
 def render_notes():
@@ -40,7 +38,6 @@ text.configure(background='#fefbae')
 render_notes()
 
 
-text.bind("<KeyRelease>", key)
 text.pack()
 dnd.bindtarget(text, handle, 'text/uri-list')
 
