@@ -29,6 +29,7 @@ def render_notes():
   notes = database.get_notes()
   for note in notes:
     text.insert(END, note[0])
+    text.insert(END, '_______\n')
   text.mark_set("end_notes", INSERT)
   text.mark_gravity("end_notes", LEFT)
 
