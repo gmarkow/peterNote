@@ -1,6 +1,8 @@
 from Tkinter import *
 import os
 import database
+#import window_customize
+
 root_path = os.path.dirname(os.path.realpath(__file__))
 os.environ['TKDND_LIBRARY'] = root_path + '/tkdnd2.8/'
 from tkdnd_wrapper import TkDND
@@ -8,8 +10,15 @@ from tkdnd_wrapper import TkDND
 root = Tk()
 dnd = TkDND(root)
 
-root.geometry("600x600")
+root.geometry("400x300")
 root.configure(background='#fefbae')
+root.title('peterNote')
+root.attributes('-alpha', 0.9)
+root.update_idletasks()
+root.overrideredirect(1)
+
+thex = u"\u00D7";
+close = Button(root, text = thex, command = lambda: root.destroy()).pack(side=RIGHT)
 
 def closing_action():
   print("Im dying")
