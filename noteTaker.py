@@ -5,7 +5,6 @@ root_path = os.path.dirname(os.path.realpath(__file__))
 os.environ['TKDND_LIBRARY'] = root_path + '/tkdnd2.8/'
 from tkdnd_wrapper import TkDND
 
-database.create_current_note()
 root = Tk()
 dnd = TkDND(root)
 
@@ -33,10 +32,8 @@ def handle(event):
 
 text = Text(root)
 
-# text.mark_set('<begin_note>')
 text.configure(background='#fefbae')
 render_notes()
-
 
 text.pack()
 dnd.bindtarget(text, handle, 'text/uri-list')
