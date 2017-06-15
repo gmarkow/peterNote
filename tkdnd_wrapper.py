@@ -1,6 +1,12 @@
 import os
 import Tkinter
 
+import shutil
+
+shutil.copy2('tkdnd2.8/linux-pkgIndex.tcl', 'tkdnd2.8/pkgIndex.tcl') 
+if os.name == 'nt':
+	shutil.copy2('tkdnd2.8/windows-pkgIndex.tcl', 'tkdnd2.8/pkgIndex.tcl') 
+
 def _load_tkdnd(master):
     tkdndlib = os.environ.get('TKDND_LIBRARY')
     if tkdndlib:
