@@ -42,7 +42,6 @@ def upsert(user_data):
 	conn.close()
 
 def save_current_note(current_note):
-	#current_note = read_one()
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
@@ -58,7 +57,7 @@ def get_notes(limit=0):
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
-	c.execute('SELECT content FROM notes_table ORDER BY index1 DESC ')
+	c.execute('SELECT content FROM notes_table ORDER BY index1 DESC')
 	response = c.fetchall()
 	conn.commit()
 	conn.close()
