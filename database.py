@@ -10,8 +10,6 @@ if not os.path.exists(sqlite_file):
 	os.mkdir('databaseFiles')
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
-
-		
 	c.execute('CREATE TABLE {tn} ({nf} {ft})'\
 	        .format(tn=notes_table, nf='index1', ft='INTEGER PRIMARY KEY AUTOINCREMENT'))
 	c.execute("ALTER TABLE {tn} ADD COLUMN '{cn}' {ct}"\
@@ -21,36 +19,28 @@ if not os.path.exists(sqlite_file):
 	conn.commit()
 	conn.close()
 
-def read_one():
-	sqlite_file = 'databaseFiles/peternote.sqlite' 
-	conn = sqlite3.connect(sqlite_file)
-	c = conn.cursor()
-	c.execute('''SELECT content FROM current_note ORDER BY index1 DESC LIMIT 1''')
-	response = c.fetchone()
-	conn.commit()
-	conn.close()
-	if response:
-		return response[0]
-	return ''	
+# def read_one():
+# 	sqlite_file = 'databaseFiles/peternote.sqlite' 
+# 	conn = sqlite3.connect(sqlite_file)
+# 	c = conn.cursor()
+# 	c.execute('''SELECT content FROM current_note ORDER BY index1 DESC LIMIT 1''')
+# 	response = c.fetchone()
+# 	conn.commit()
+# 	conn.close()
+# 	if response:
+# 		return response[0]
+# 	return ''	
 
-def upsert(user_data):
-	sqlite_file = 'databaseFiles/peternote.sqlite' 
-	conn = sqlite3.connect(sqlite_file)
-	c = conn.cursor()
- 	c.execute('INSERT INTO current_note( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':user_data, 'thetimestamp':datetime.datetime.now()})
-	conn.commit()
-	conn.close()
-
-def save_current_note(current_note):
-	sqlite_file = 'databaseFiles/peternote.sqlite' 
-	conn = sqlite3.connect(sqlite_file)
-	c = conn.cursor()
-	if current_note != '':
-	 	c.execute('INSERT INTO notes_table( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':current_note, 'thetimestamp':datetime.datetime.now()})
-	else:
-		print("nothing to save")
-	conn.commit()
-	conn.close()
+# def save_current_note(current_note):
+# 	sqlite_file = 'databaseFiles/peternote.sqlite' 
+# 	conn = sqlite3.connect(sqlite_file)
+# 	c = conn.cursor()
+# 	if current_note != '':
+# 	 	c.execute('INSERT INTO notes_table( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':current_note, 'thetimestamp':datetime.datetime.now()})
+# 	else:
+# 		print("nothing to save")
+# 	conn.commit()
+# 	conn.close()
 	
 
 def get_notes(limit=0):

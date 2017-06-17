@@ -34,11 +34,6 @@ def closing_action():
 	for note in note_objects:
 		if d[note.widget.winfo_name()].is_changed:
 			d[note.widget.winfo_name()].save_me()
-			#print(d[note.widget.winfo_name()].db_index)
-			#somevar = d[note.widget.winfo_name()].widget.get("1.0", END)
-			#print(somevar)
-			 # database.save_current_note(text.get("end_notes", END))
-	print("Im dying")
 	root.destroy()
 
 def key_action(key):
@@ -67,8 +62,6 @@ canvas.create_window((4,4), window=frame, anchor="nw")
 frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
 
 d = {}
-c = {}
-changed_index = []
 note_objects = []
 
 all_notes = database.get_notes()
