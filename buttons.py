@@ -1,6 +1,7 @@
 from Tkinter import *
 import database
 import os
+import notes
 
 root_path = os.path.dirname(os.path.realpath(__file__))
 os.environ['TKDND_LIBRARY'] = root_path + '/tkdnd2.8/'
@@ -9,13 +10,13 @@ from tkdnd_wrapper import TkDND
 #Code from here 
 #https://stackoverflow.com/questions/3085696/adding-a-scrollbar-to-a-group-of-widgets-in-tkinter/3092341#3092341
 def populate(frame):
-	i=1
-	for key, value in d.iteritems():
-		value.bind("<KeyRelease>", key_action)
-		value.pack()
-		dnd.bindtarget(value, handle, 'text/uri-list')
-		c[value.winfo_name()] = key
-		i+=1
+	for note in note_objects:
+		print(note.get_text())
+		note.widget.insert(END, note.text)
+		note.widget.pack()
+		d[note.widget.winfo_name()] = note
+	 	note.widget.bind("<KeyRelease>", key_action)
+	 	dnd.bindtarget(note.widget, handle, 'text/uri-list')
 
 def onFrameConfigure(canvas):
     '''Reset the scroll region to encompass the inner frame'''
@@ -23,26 +24,25 @@ def onFrameConfigure(canvas):
 
 def handle(event):
     file_extension = os.path.splitext(event.data)
-    changed_index.append(c[event.widget.winfo_name()])
-    print(changed_index)
     if file_extension[1] == '.jpg':
     	event.widget.insert(END, "I'm a picture")
     else:
     	event.widget.insert(END, event.data)
+    d[event.widget.winfo_name()].set_is_changed()
 
 def closing_action():
-	i=1
-	for key in c:
-		print(key)
-		print(c[key])
-	for widgets in d:
-		
-		i+=1
+	for note in note_objects:
+		if d[note.widget.winfo_name()].is_changed:
+			d[note.widget.winfo_name()].save_me()
+			#print(d[note.widget.winfo_name()].db_index)
+			#somevar = d[note.widget.winfo_name()].widget.get("1.0", END)
+			#print(somevar)
+			 # database.save_current_note(text.get("end_notes", END))
 	print("Im dying")
 	root.destroy()
 
 def key_action(key):
-	print(key.widget.winfo_name())
+	d[key.widget.winfo_name()].set_is_changed()
 
 root = Tk()
 dnd = TkDND(root)
@@ -69,17 +69,18 @@ frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
 d = {}
 c = {}
 changed_index = []
+note_objects = []
 
 all_notes = database.get_notes()
 for i in all_notes:
  	if i[1] != "\n":
- 		d[i[0]] = Text(frame)
- 		d[i[0]].insert(END, "{}".format(i[1]))
- 		d[i[0]].configure(background='#fefbae')
- 		d['name'] = d[i[0]].winfo_name()
- 		d['changed'] = 0		
+ 		this_frame = Text(frame)
+ 		this_frame.insert(END, "{}".format(i[1]))
+ 		this_frame.configure(background='#fefbae')
+ 		this_note = notes.Note(Text(frame), i[1], i[0])
+ 		note_objects.append(this_note)
  		
 
 populate(frame)
-
+root.protocol("WM_DELETE_WINDOW", closing_action)
 root.mainloop()
