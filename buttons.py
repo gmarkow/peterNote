@@ -9,9 +9,13 @@ from tkdnd_wrapper import TkDND
 #Code from here 
 #https://stackoverflow.com/questions/3085696/adding-a-scrollbar-to-a-group-of-widgets-in-tkinter/3092341#3092341
 def populate(frame):
-    for value in d.itervalues():
-    	value.pack()
-    	dnd.bindtarget(value, handle, 'text/uri-list')
+	i=1
+	for key, value in d.iteritems():
+		value.bind("<KeyRelease>", key_action)
+		value.pack()
+		dnd.bindtarget(value, handle, 'text/uri-list')
+		c[value.winfo_name()] = key
+		i+=1
 
 def onFrameConfigure(canvas):
     '''Reset the scroll region to encompass the inner frame'''
@@ -19,7 +23,8 @@ def onFrameConfigure(canvas):
 
 def handle(event):
     file_extension = os.path.splitext(event.data)
-    print(event.widget.winfo_name())
+    changed_index.append(c[event.widget.winfo_name()])
+    print(changed_index)
     if file_extension[1] == '.jpg':
     	event.widget.insert(END, "I'm a picture")
     else:
@@ -27,13 +32,17 @@ def handle(event):
 
 def closing_action():
 	i=1
-	for names in c:
-		print(names)
+	for key in c:
+		print(key)
+		print(c[key])
 	for widgets in d:
 		
 		i+=1
 	print("Im dying")
 	root.destroy()
+
+def key_action(key):
+	print(key.widget.winfo_name())
 
 root = Tk()
 dnd = TkDND(root)
@@ -59,14 +68,16 @@ frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
 
 d = {}
 c = {}
+changed_index = []
+
 all_notes = database.get_notes()
 for i in all_notes:
- 	d["txt{}".format(i)] = Text(frame)
- 	if i[0] != "\n":
- 		d["txt{}".format(i)].insert(END, "{}".format(i[1]))
- 		#d["txt{}".format(i)].tag_add("note_index_{}".format(i[0]), "1.0", END)
- 		d["txt{}".format(i)].configure(background='#fefbae')
- 		c["txt{}".format(i)] = d["txt{}".format(i)].winfo_name()
+ 	if i[1] != "\n":
+ 		d[i[0]] = Text(frame)
+ 		d[i[0]].insert(END, "{}".format(i[1]))
+ 		d[i[0]].configure(background='#fefbae')
+ 		d['name'] = d[i[0]].winfo_name()
+ 		d['changed'] = 0		
  		
 
 populate(frame)
