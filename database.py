@@ -57,7 +57,7 @@ def get_notes(limit=0):
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
-	c.execute('SELECT content FROM notes_table ORDER BY index1 ASC')
+	c.execute('SELECT index1, content FROM notes_table ORDER BY index1 ASC')
 	response = c.fetchall()
 	conn.commit()
 	conn.close()
