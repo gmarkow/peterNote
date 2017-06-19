@@ -59,6 +59,12 @@ def scroll_action(action=0,destination=0,unit=0):
     make_new_note()
     print scroll_position[1]
 
+def open_search(event):
+  search_frame = Frame(root, background="#ffffff")
+  search_frame.label = "Search"
+  search_frame.pack(side=BOTTOM)
+  print("frame packed")
+
 
 root = Tk()
 dnd = TkDND(root)
@@ -72,6 +78,7 @@ root.title('peterNote')
 root.attributes('-alpha', 0.9)
 root.update_idletasks()
 root.overrideredirect(1)
+root.bind("<Control-f>", open_search)
 
 thex = u"\u00D7";
 close = Button(root, text = thex, command = lambda: closing_action()).pack(side=RIGHT)
