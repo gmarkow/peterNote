@@ -37,7 +37,6 @@ def closing_action():
 	root.destroy()
 
 def key_action(key):
-  print("working")
   d[key.widget.winfo_name()].set_is_changed()
 
 def make_new_note():
@@ -82,6 +81,16 @@ canvas.pack(side="left", fill="both", expand=True)
 canvas.create_window((4,4), window=frame, anchor="nw")
 
 frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
+
+
+menubar = Menu(root)
+menubar.add_command(label="Prefrences", command=key_action)
+
+# display the menu
+root.config(menu=menubar)
+
+
+
 
 d = {}
 note_objects = []
