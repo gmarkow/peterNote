@@ -56,7 +56,7 @@ def scroll_action(action=0,destination=0,unit=0):
     canvas.yview(action,destination)
   scroll_position = vsb.get()
   last_note = note_objects[len(note_objects) - 1]
-  if scroll_position[1] > .99 and last_note.text != "":
+  if scroll_position[1] > .99 and last_note.get_current_text() != "":
     make_new_note()
     print scroll_position[1]
 

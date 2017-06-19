@@ -22,3 +22,9 @@ class Note(object):
 			database.update_note(new_content, self.db_index)
 		else:
 			database.save_current_note(new_content)
+
+	def get_current_text(self):
+		if self.is_changed:
+			self.text = self.widget.get("1.0", END)
+		return self.text
+
