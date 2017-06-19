@@ -1,7 +1,7 @@
 import database
 from Tkinter import *
 class Note(object):
-	def __init__(self, widget, text, db_index):
+	def __init__(self, widget, text, db_index=None):
 		self.widget = widget
 		self.text = text
 		self.db_index = db_index
@@ -18,4 +18,7 @@ class Note(object):
 
 	def save_me(self):
 		new_content = self.widget.get("1.0", END)
-		database.update_note(new_content, self.db_index)
+		if self.db_index != None:
+			database.update_note(new_content, self.db_index)
+		else:
+			database.save_current_note(new_content)

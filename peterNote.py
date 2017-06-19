@@ -37,13 +37,35 @@ def closing_action():
 	root.destroy()
 
 def key_action(key):
-	d[key.widget.winfo_name()].set_is_changed()
+  print("working")
+  d[key.widget.winfo_name()].set_is_changed()
+
+def make_new_note():
+    this_note = notes.Note(Text(frame), "")
+    note_objects.append(this_note)
+    this_note.widget.pack()
+    d[this_note.widget.winfo_name()] = this_note
+    this_note.widget.bind("<KeyRelease>", key_action)
+    dnd.bindtarget(this_note.widget, handle, 'text/uri-list')
+
+
+def scroll_action(action=0,destination=0,unit=0):
+  if action != "moveto":
+    canvas.yview(action,destination,unit)
+  else:
+    canvas.yview(action,destination)
+  scroll_position = vsb.get()
+  last_note = note_objects[len(note_objects) - 1]
+  if scroll_position[1] > .99 and last_note.text != "":
+    make_new_note()
+    print scroll_position[1]
+
 
 root = Tk()
 dnd = TkDND(root)
 canvas = Canvas(root, borderwidth=0, background="#ffffff")
 frame = Frame(canvas, background="#ffffff")
-vsb = Scrollbar(root, orient="vertical", command=canvas.yview)
+vsb = Scrollbar(root, orient="vertical", command=scroll_action)
 canvas.configure(yscrollcommand=vsb.set)
 root.geometry("400x300")
 root.configure(background='#fefbae')
@@ -67,13 +89,13 @@ note_objects = []
 all_notes = database.get_notes()
 for i in all_notes:
  	if i[1] != "\n":
- 		this_frame = Text(frame)
- 		this_frame.insert(END, "{}".format(i[1]))
- 		this_frame.configure(background='#fefbae')
+ 		# this_frame = Text(frame)
+ 		# this_frame.insert(END, "{}".format(i[1]))
+ 		# this_frame.configure(background='#fefbae')
  		this_note = notes.Note(Text(frame), i[1], i[0])
  		note_objects.append(this_note)
  		
 
 populate(frame)
-root.protocol("WM_DELETE_WINDOW", closing_action)
+#root.protocol("WM_DELETE_WINDOW", closing_action)
 root.mainloop()

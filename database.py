@@ -31,16 +31,16 @@ if not os.path.exists(sqlite_file):
 # 		return response[0]
 # 	return ''	
 
-# def save_current_note(current_note):
-# 	sqlite_file = 'databaseFiles/peternote.sqlite' 
-# 	conn = sqlite3.connect(sqlite_file)
-# 	c = conn.cursor()
-# 	if current_note != '':
-# 	 	c.execute('INSERT INTO notes_table( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':current_note, 'thetimestamp':datetime.datetime.now()})
-# 	else:
-# 		print("nothing to save")
-# 	conn.commit()
-# 	conn.close()
+def save_current_note(current_note):
+	sqlite_file = 'databaseFiles/peternote.sqlite' 
+	conn = sqlite3.connect(sqlite_file)
+	c = conn.cursor()
+	if current_note != '':
+	 	c.execute('INSERT INTO notes_table( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':current_note, 'thetimestamp':datetime.datetime.now()})
+	else:
+		print("nothing to save")
+	conn.commit()
+	conn.close()
 	
 
 def get_notes(limit=0):
