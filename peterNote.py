@@ -39,14 +39,18 @@ def key_action(key):
     d[key.widget.winfo_name()].set_is_changed()
     d[key.widget.winfo_name()].adjust_height()
 
-def make_new_note(event):
+def make_new_note(event = None):
     global note_objects
+    global vsb
     this_note = notes.Note(Text(frame), "")
     note_objects.append(this_note)
     this_note.widget.pack()
     d[this_note.widget.winfo_name()] = this_note
     this_note.widget.bind("<KeyRelease>", key_action)
     dnd.bindtarget(this_note.widget, handle, 'text/uri-list')
+    if event:
+      vsb.see(END)
+      this_note.widget.focus()
 
 
 def scroll_action(action=0,destination=0,unit=0):
@@ -134,7 +138,7 @@ canvas.pack(side="left", fill="both", expand=True)
 canvas.create_window((4,4), window=frame, anchor="nw")
 
 frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
-root.bind("a", make_new_note)
+root.bind("n", make_new_note)
 
 
 #menubar = Menu(root)
