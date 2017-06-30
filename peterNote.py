@@ -9,14 +9,14 @@ from tkdnd_wrapper import TkDND
 
 #Code from here 
 #https://stackoverflow.com/questions/3085696/adding-a-scrollbar-to-a-group-of-widgets-in-tkinter/3092341#3092341
-def populate(frame):
-	for note in note_objects:
-		print(note.get_text())
-		note.widget.insert(END, note.text)
-		note.widget.pack()
-		d[note.widget.winfo_name()] = note
-	 	note.widget.bind("<KeyRelease>", key_action)
-	 	dnd.bindtarget(note.widget, handle, 'text/uri-list')
+def populate():
+    for note in note_objects:
+        print(note.get_text())
+        note.widget.insert(END, note.text)
+        note.widget.pack()
+        d[note.widget.winfo_name()] = note
+        note.widget.bind("<KeyRelease>", key_action)
+        dnd.bindtarget(note.widget, handle, 'text/uri-list')
 
 def onFrameConfigure(canvas):
     '''Reset the scroll region to encompass the inner frame'''
@@ -25,19 +25,19 @@ def onFrameConfigure(canvas):
 def handle(event):
     file_extension = os.path.splitext(event.data)
     if file_extension[1] == '.jpg':
-    	event.widget.insert(END, "I'm a picture")
+        event.widget.insert(END, "I'm a picture")
     else:
-    	event.widget.insert(END, event.data)
+        event.widget.insert(END, event.data)
     d[event.widget.winfo_name()].set_is_changed()
 
 def closing_action():
-	for note in note_objects:
-		if d[note.widget.winfo_name()].is_changed:
-			d[note.widget.winfo_name()].save_me()
-	root.destroy()
+    for note in note_objects:
+        if d[note.widget.winfo_name()].is_changed:
+            d[note.widget.winfo_name()].save_me()
+    root.destroy()
 
 def key_action(key):
-  d[key.widget.winfo_name()].set_is_changed()
+    d[key.widget.winfo_name()].set_is_changed()
 
 def make_new_note():
     this_note = notes.Note(Text(frame), "")
@@ -60,11 +60,16 @@ def scroll_action(action=0,destination=0,unit=0):
     print scroll_position[1]
 
 def open_search(event):
-  search_frame = Frame(root, background="#ffffff")
+  search_frame = Frame(canvas, background="#ffffff")
   search_frame.label = "Search"
+  search_input = Entry(search_frame, width=300)
+  search_input.pack()
   search_frame.pack(side=BOTTOM)
-  print("frame packed")
+  root.bind('<Key-Escape>', lambda event:
+                              search_frame.pack_forget())
 
+def hide_search(search_frame):
+  search_frame.pack_forget()
 
 root = Tk()
 dnd = TkDND(root)
@@ -104,14 +109,14 @@ note_objects = []
 
 all_notes = database.get_notes()
 for i in all_notes:
- 	if i[1] != "\n":
- 		# this_frame = Text(frame)
+  if i[1] != "\n":
+        # this_frame = Text(frame)
  		# this_frame.insert(END, "{}".format(i[1]))
  		# this_frame.configure(background='#fefbae')
- 		this_note = notes.Note(Text(frame), i[1], i[0])
- 		note_objects.append(this_note)
+    this_note = notes.Note(Text(frame), i[1], i[0])
+    note_objects.append(this_note)
  		
 
-populate(frame)
+populate()
 #root.protocol("WM_DELETE_WINDOW", closing_action)
 root.mainloop()
