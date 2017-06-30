@@ -43,7 +43,7 @@ def save_current_note(current_note):
 	conn.close()
 	
 
-def get_notes(limit=0):
+def get_all_notes(limit=0):
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
@@ -60,3 +60,13 @@ def update_note(user_data, record_number):
  	c.execute('UPDATE notes_table SET content=:thecontent, date_time=:thetimestamp WHERE index1=:theindex', {'thecontent':user_data, 'thetimestamp':datetime.datetime.now(), 'theindex':record_number})
 	conn.commit()
 	conn.close()
+
+def search_notes(search_string):
+	sqlite_file = 'databaseFiles/peternote.sqlite' 
+	conn = sqlite3.connect(sqlite_file)
+	c = conn.cursor()
+	c.execute('SELECT index1 FROM notes_table WHERE content LIKE \'%' + search_string + '%\'')
+	response = c.fetchall()
+	conn.commit()
+	conn.close()
+	return response

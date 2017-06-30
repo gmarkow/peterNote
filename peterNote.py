@@ -9,9 +9,9 @@ from tkdnd_wrapper import TkDND
 
 #Code from here 
 #https://stackoverflow.com/questions/3085696/adding-a-scrollbar-to-a-group-of-widgets-in-tkinter/3092341#3092341
-def populate():
-    for note in note_objects:
-        print(note.get_text())
+def populate(note_to_render):
+    for note in note_to_render:
+        #print(note.get_text())
         note.widget.insert(END, note.text)
         note.widget.pack()
         d[note.widget.winfo_name()] = note
@@ -65,11 +65,40 @@ def open_search(event):
   search_input = Entry(search_frame, width=300)
   search_input.pack()
   search_frame.pack(side=BOTTOM)
-  root.bind('<Key-Escape>', lambda event:
-                              search_frame.pack_forget())
+  search_input.bind("<KeyRelease>", search_notes)
+  root.bind('<Key-Escape>', lambda event, sf = search_frame:
+                              close_search(sf))
 
-def hide_search(search_frame):
+def close_search(search_frame):
+  all_notes = database.get_all_notes()
+  note_objects = create_note_objects(all_notes)
   search_frame.pack_forget()
+  frame.pack_forget()
+  populate(note_objects)
+
+def search_notes(event):
+  search_notes = event.widget.get()
+  response = database.search_notes(search_notes)
+  matching_notes = [] 
+  for note_id in response:
+    matching_notes.append(note_id[0])
+  for note in note_objects:
+    if note.db_index not in matching_notes:
+      note.widget.pack_forget()
+  print("stpo")
+  #populate(matching_notes)
+
+def create_note_objects(db_response):
+  note_objects = []
+  for i in db_response:
+    if i[1] != "\n":
+      # this_frame = Text(frame)
+      # this_frame.insert(END, "{}".format(i[1]))
+      # this_frame.configure(background='#fefbae')
+      this_note = notes.Note(Text(frame), i[1], i[0])
+      note_objects.append(this_note)
+  return note_objects
+    
 
 root = Tk()
 dnd = TkDND(root)
@@ -77,7 +106,7 @@ canvas = Canvas(root, borderwidth=0, background="#ffffff")
 frame = Frame(canvas, background="#ffffff")
 vsb = Scrollbar(root, orient="vertical", command=scroll_action)
 canvas.configure(yscrollcommand=vsb.set)
-root.geometry("400x300")
+root.geometry("400x500")
 root.configure(background='#fefbae')
 root.title('peterNote')
 root.attributes('-alpha', 0.9)
@@ -101,22 +130,10 @@ menubar.add_command(label="Prefrences", command=key_action)
 # display the menu
 root.config(menu=menubar)
 
-
-
-
 d = {}
-note_objects = []
+all_notes = database.get_all_notes()
+note_objects = create_note_objects(all_notes)
 
-all_notes = database.get_notes()
-for i in all_notes:
-  if i[1] != "\n":
-        # this_frame = Text(frame)
- 		# this_frame.insert(END, "{}".format(i[1]))
- 		# this_frame.configure(background='#fefbae')
-    this_note = notes.Note(Text(frame), i[1], i[0])
-    note_objects.append(this_note)
- 		
-
-populate()
+populate(note_objects)
 #root.protocol("WM_DELETE_WINDOW", closing_action)
 root.mainloop()
