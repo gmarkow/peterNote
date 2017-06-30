@@ -2,11 +2,13 @@ import database
 from Tkinter import *
 class Note(object):
 	def __init__(self, widget, text, db_index=None):
-		widget_height = text.count("\n") + 1
+		widget_height = 1#text.count("\n") + 1
 		self.widget = widget
 		self.text = text
 		self.db_index = db_index
 		self.is_changed = 0
+		if widget_height < 2:
+			widget_height = 2 
 
 		self.widget.configure(background='#fefbae', height=widget_height)
 	def get_text(self):

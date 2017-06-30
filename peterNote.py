@@ -39,7 +39,8 @@ def key_action(key):
     d[key.widget.winfo_name()].set_is_changed()
     d[key.widget.winfo_name()].adjust_height()
 
-def make_new_note():
+def make_new_note(event):
+    global note_objects
     this_note = notes.Note(Text(frame), "")
     note_objects.append(this_note)
     this_note.widget.pack()
@@ -70,14 +71,14 @@ def open_search(event):
   search_input.pack()
   search_frame.pack(side=BOTTOM)
   search_input.bind("<KeyRelease>", search_notes)
-  search_input.bind('<Key-Escape>', lambda event, sf = search_frame, si = search_input:
+  root.bind('<Key-Escape>', lambda event, sf = search_frame, si = search_input:
                               close_search(sf, si))
 
 def close_search(search_frame, search_input):
   global auto_new_note
   global note_objects
   auto_new_note = 1
-  #search_input.unbind("<Key-Escape>")
+  root.unbind("<Key-Escape>")
   #all_notes = database.get_all_notes()
   #note_objects = create_note_objects(all_notes)
   search_frame.pack_forget()
@@ -96,7 +97,11 @@ def search_notes(event):
   print("stpo")
 
 def create_note_objects(db_response):
+  global note_objects
   note_objects = []
+
+  if not db_response:
+    make_new_note()
   for record in db_response:
     if record[1] != "\n":
       this_note = notes.Note(Text(frame), record[1], record[0])
@@ -129,6 +134,7 @@ canvas.pack(side="left", fill="both", expand=True)
 canvas.create_window((4,4), window=frame, anchor="nw")
 
 frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
+root.bind("a", make_new_note)
 
 
 #menubar = Menu(root)
