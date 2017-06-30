@@ -49,17 +49,20 @@ def make_new_note():
 
 
 def scroll_action(action=0,destination=0,unit=0):
+  global auto_new_note
   if action != "moveto":
     canvas.yview(action,destination,unit)
   else:
     canvas.yview(action,destination)
   scroll_position = vsb.get()
   last_note = note_objects[len(note_objects) - 1]
-  if scroll_position[1] > .99 and last_note.get_current_text() != "":
+  if scroll_position[1] > .99 and last_note.get_current_text() != "" and auto_new_note == 1:
     make_new_note()
     print scroll_position[1]
 
 def open_search(event):
+  global auto_new_note
+  auto_new_note = 0
   search_frame = Frame(canvas, background="#ffffff")
   search_frame.label = "Search"
   search_input = Entry(search_frame, width=300)
@@ -70,6 +73,8 @@ def open_search(event):
                               close_search(sf))
 
 def close_search(search_frame):
+  global auto_new_note
+  auto_new_note = 1
   all_notes = database.get_all_notes()
   note_objects = create_note_objects(all_notes)
   search_frame.pack_forget()
@@ -86,21 +91,18 @@ def search_notes(event):
     if note.db_index not in matching_notes:
       note.widget.pack_forget()
   print("stpo")
-  #populate(matching_notes)
 
 def create_note_objects(db_response):
   note_objects = []
-  for i in db_response:
-    if i[1] != "\n":
-      # this_frame = Text(frame)
-      # this_frame.insert(END, "{}".format(i[1]))
-      # this_frame.configure(background='#fefbae')
-      this_note = notes.Note(Text(frame), i[1], i[0])
+  for record in db_response:
+    if record[1] != "\n":
+      this_note = notes.Note(Text(frame), record[1], record[0])
       note_objects.append(this_note)
   return note_objects
     
 
 root = Tk()
+#Drag and drop library
 dnd = TkDND(root)
 canvas = Canvas(root, borderwidth=0, background="#ffffff")
 frame = Frame(canvas, background="#ffffff")
@@ -114,6 +116,8 @@ root.update_idletasks()
 root.overrideredirect(1)
 root.bind("<Control-f>", open_search)
 
+auto_new_note = 1 
+
 thex = u"\u00D7";
 close = Button(root, text = thex, command = lambda: closing_action()).pack(side=RIGHT)
 
@@ -124,11 +128,11 @@ canvas.create_window((4,4), window=frame, anchor="nw")
 frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
 
 
-menubar = Menu(root)
-menubar.add_command(label="Prefrences", command=key_action)
+#menubar = Menu(root)
+#menubar.add_command(label="Prefrences", command=key_action)
 
 # display the menu
-root.config(menu=menubar)
+#root.config(menu=menubar)
 
 d = {}
 all_notes = database.get_all_notes()
