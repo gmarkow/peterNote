@@ -11,7 +11,6 @@ from tkdnd_wrapper import TkDND
 #https://stackoverflow.com/questions/3085696/adding-a-scrollbar-to-a-group-of-widgets-in-tkinter/3092341#3092341
 def populate(note_to_render):
     for note in note_to_render:
-        #print(note.get_text())
         note.widget.insert(END, note.text)
         note.widget.pack()
         d[note.widget.winfo_name()] = note
@@ -38,6 +37,7 @@ def closing_action():
 
 def key_action(key):
     d[key.widget.winfo_name()].set_is_changed()
+    d[key.widget.winfo_name()].adjust_height()
 
 def make_new_note():
     this_note = notes.Note(Text(frame), "")
@@ -65,18 +65,21 @@ def open_search(event):
   auto_new_note = 0
   search_frame = Frame(canvas, background="#ffffff")
   search_frame.label = "Search"
-  search_input = Entry(search_frame, width=300)
+  search_input = Entry(search_frame, width=300, background="#ffffff")
+  search_input.focus()
   search_input.pack()
   search_frame.pack(side=BOTTOM)
   search_input.bind("<KeyRelease>", search_notes)
-  root.bind('<Key-Escape>', lambda event, sf = search_frame:
-                              close_search(sf))
+  search_input.bind('<Key-Escape>', lambda event, sf = search_frame, si = search_input:
+                              close_search(sf, si))
 
-def close_search(search_frame):
+def close_search(search_frame, search_input):
   global auto_new_note
+  global note_objects
   auto_new_note = 1
-  all_notes = database.get_all_notes()
-  note_objects = create_note_objects(all_notes)
+  #search_input.unbind("<Key-Escape>")
+  #all_notes = database.get_all_notes()
+  #note_objects = create_note_objects(all_notes)
   search_frame.pack_forget()
   frame.pack_forget()
   populate(note_objects)
