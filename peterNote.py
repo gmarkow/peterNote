@@ -42,15 +42,31 @@ def key_action(key):
 def make_new_note(event = None):
     global note_objects
     global vsb
-    this_note = notes.Note(Text(frame), "")
-    note_objects.append(this_note)
-    this_note.widget.pack()
-    d[this_note.widget.winfo_name()] = this_note
-    this_note.widget.bind("<KeyRelease>", key_action)
-    dnd.bindtarget(this_note.widget, handle, 'text/uri-list')
-    if event:
-      vsb.see(END)
+    this_note = None
+    scroll_position = vsb.get()
+    last_note = note_objects[len(note_objects) - 1]
+    if scroll_position[1] > .99 and last_note.get_current_text() != "" and last_note.get_current_text() != "\n" and auto_new_note == 1:
+      this_note = notes.Note(Text(frame), "")
+      note_objects.append(this_note)
+      this_note.widget.pack()
+      d[this_note.widget.winfo_name()] = this_note
+      this_note.widget.bind("<KeyRelease>", key_action)
+      dnd.bindtarget(this_note.widget, handle, 'text/uri-list')
+    if event and this_note != None:
+      canvas.yview('moveto', '1.0')
       this_note.widget.focus()
+    elif event and this_note == None:
+      this_note = notes.Note(Text(frame), "")
+      note_objects.append(this_note)
+      this_note.widget.pack()
+      d[this_note.widget.winfo_name()] = this_note
+      this_note.widget.bind("<KeyRelease>", key_action)
+      dnd.bindtarget(this_note.widget, handle, 'text/uri-list')
+      canvas.yview('moveto', '1.0')
+      this_note.widget.focus()
+
+    else:
+      last_note.widget.focus()
 
 
 def scroll_action(action=0,destination=0,unit=0):
@@ -59,11 +75,9 @@ def scroll_action(action=0,destination=0,unit=0):
     canvas.yview(action,destination,unit)
   else:
     canvas.yview(action,destination)
-  scroll_position = vsb.get()
-  last_note = note_objects[len(note_objects) - 1]
-  if scroll_position[1] > .99 and last_note.get_current_text() != "" and auto_new_note == 1:
-    make_new_note()
-    print scroll_position[1]
+
+  make_new_note()
+  
 
 def open_search(event):
   global auto_new_note
@@ -112,6 +126,8 @@ def create_note_objects(db_response):
       note_objects.append(this_note)
   return note_objects
     
+def testtest():
+    print("test")
 
 root = Tk()
 #Drag and drop library
@@ -127,6 +143,7 @@ root.attributes('-alpha', 0.9)
 root.update_idletasks()
 root.overrideredirect(1)
 root.bind("<Control-f>", open_search)
+root.bind("<Control-n>", make_new_note)
 
 auto_new_note = 1 
 
@@ -138,7 +155,7 @@ canvas.pack(side="left", fill="both", expand=True)
 canvas.create_window((4,4), window=frame, anchor="nw")
 
 frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
-root.bind("n", make_new_note)
+
 
 
 #menubar = Menu(root)
