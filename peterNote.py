@@ -41,16 +41,18 @@ def key_action(key):
 
 def make_new_note(event = None):
     global note_objects
-    global vsb
     this_note = notes.Note(Text(frame), "")
     note_objects.append(this_note)
-    this_note.widget.pack()
     d[this_note.widget.winfo_name()] = this_note
     this_note.widget.bind("<KeyRelease>", key_action)
+    this_note.widget.pack()
     dnd.bindtarget(this_note.widget, handle, 'text/uri-list')
     if event:
-      vsb.see(END)
+      # canvas.yview_moveto(float(scroll_y+1)/img_height)
+      scroll_action("moveto", 1.0) 
       this_note.widget.focus()
+      # canvas.yview_moveto(1.0)
+
 
 
 def scroll_action(action=0,destination=0,unit=0):
@@ -128,7 +130,7 @@ root.update_idletasks()
 root.overrideredirect(1)
 root.bind("<Control-f>", open_search)
 
-auto_new_note = 1 
+auto_new_note = 0 
 
 thex = u"\u00D7";
 close = Button(root, text = thex, command = lambda: closing_action()).pack(side=RIGHT)
