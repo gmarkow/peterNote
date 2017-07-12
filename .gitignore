@@ -1,5 +1,6 @@
 noteTaker.sublime-project
 noteTaker.sublime-workspace
 /databaseFiles/*
-.idea
+.idea/*
+/.idea/*
 *pyc

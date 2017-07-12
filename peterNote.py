@@ -41,7 +41,7 @@ def key_action(key):
 
 def make_new_note(event = None):
     global note_objects
-    this_note = notes.Note(Text(frame), "")
+    this_note = notes.Note(Text(frame), default_widget_height, "")
     note_objects.append(this_note)
     d[this_note.widget.winfo_name()] = this_note
     this_note.widget.bind("<KeyRelease>", key_action)
@@ -110,7 +110,7 @@ def create_note_objects(db_response):
     make_new_note()
   for record in db_response:
     if record[1] != "\n":
-      this_note = notes.Note(Text(frame), record[1], record[0])
+      this_note = notes.Note(Text(frame), default_widget_height, record[1], record[0])
       note_objects.append(this_note)
   return note_objects
     
@@ -130,7 +130,8 @@ root.update_idletasks()
 root.overrideredirect(1)
 root.bind("<Control-f>", open_search)
 
-auto_new_note = 0 
+auto_new_note = 0
+default_widget_height = 5; 
 
 thex = u"\u00D7";
 close = Button(root, text = thex, command = lambda: closing_action()).pack(side=RIGHT)

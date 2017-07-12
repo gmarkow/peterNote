@@ -1,16 +1,18 @@
 import database
 from Tkinter import *
 class Note(object):
-	def __init__(self, widget, text, db_index=None):
+	def __init__(self, widget, default_height, text, db_index=None, ):
 		widget_height = 1#text.count("\n") + 1
 		self.widget = widget
 		self.text = text
 		self.db_index = db_index
 		self.is_changed = 0
-		if widget_height < 2:
-			widget_height = 2 
+		self.default_height = default_height
+		# if widget_height < default_height:
+			# widget_height = 2 
 
-		self.widget.configure(background='#fefbae', height=widget_height)
+		self.widget.configure(background='#fefbae', height=default_height)
+		self.adjust_height()
 	def get_text(self):
 		print(self.text)
 
@@ -33,8 +35,11 @@ class Note(object):
 		return self.text
 
 	def adjust_height(self):
-		current_text = self.widget.get("1.0", END)
-		widget_height = current_text.count("\n") + 1
+		current_text = self.text#self.widget.get("1.0", END)
+		if((self.text.count("\n") + 1) < self.default_height):
+			widget_height = self.default_height
+		else:
+			widget_height = current_text.count("\n") + 1
 		self.widget.configure(background='#fefbae', height=widget_height)
 
 
