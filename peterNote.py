@@ -122,9 +122,20 @@ def open_prefrences():
   menu_window_root.attributes('-alpha', 0.9)
   menu_window_root.update_idletasks()
   menu_window_root.overrideredirect(1)
-  note_color = Entry(menu_window_root)
-  Label(menu_window_root, text='notecolor').pack(side=LEFT)
+  options_frame_1 = Frame(menu_window_root, background="#ffffff")
+  options_frame_2 = Frame(menu_window_root, background="#ffffff")
+
+  note_color = Entry(options_frame_1, width=5)
+  Label(options_frame_1, text='Note color:').pack(side=LEFT)
   note_color.pack()
+  
+  note_height = Entry(options_frame_2, width=5)
+  Label(options_frame_2, text='Note height:').pack(side=LEFT)
+  note_height.pack()
+  # autonewnote = Checkbutton(options_frame, text="Auto new note:")
+  # autonewnote.pack()
+  options_frame_1.pack()
+  options_frame_2.pack()
 
 root = Tk()
 #Drag and drop library
