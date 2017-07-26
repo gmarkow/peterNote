@@ -114,6 +114,17 @@ def create_note_objects(db_response):
       note_objects.append(this_note)
   return note_objects
     
+def open_prefrences():
+  menu_window_root = Tk()
+  menu_window_root.geometry("400x500")
+  menu_window_root.configure(background='#fefbae')
+  menu_window_root.title('Prefrences')
+  menu_window_root.attributes('-alpha', 0.9)
+  menu_window_root.update_idletasks()
+  menu_window_root.overrideredirect(1)
+  note_color = Entry(menu_window_root)
+  Label(menu_window_root, text='notecolor').pack(side=LEFT)
+  note_color.pack()
 
 root = Tk()
 #Drag and drop library
@@ -144,11 +155,12 @@ frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
 root.bind("n", make_new_note)
 
 
-#menubar = Menu(root)
-#menubar.add_command(label="Prefrences", command=key_action)
+menubar = Menu(root)
+menubar.add_command(label="Prefrences", command=open_prefrences)
+
 
 # display the menu
-#root.config(menu=menubar)
+root.config(menu=menubar)
 
 d = {}
 all_notes = database.get_all_notes()
