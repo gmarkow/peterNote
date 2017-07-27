@@ -124,6 +124,7 @@ def open_prefrences():
   menu_window_root.overrideredirect(1)
   options_frame_1 = Frame(menu_window_root, background="#ffffff")
   options_frame_2 = Frame(menu_window_root, background="#ffffff")
+  options_frame_3 = Frame(menu_window_root, background="#ffffff")
 
   note_color = Entry(options_frame_1, width=5)
   Label(options_frame_1, text='Note color:').pack(side=LEFT)
@@ -132,10 +133,15 @@ def open_prefrences():
   note_height = Entry(options_frame_2, width=5)
   Label(options_frame_2, text='Note height:').pack(side=LEFT)
   note_height.pack()
-  # autonewnote = Checkbutton(options_frame, text="Auto new note:")
-  # autonewnote.pack()
+  autonewnote = Checkbutton(options_frame_3, text="Auto new note:")
+  autonewnote.pack()
+  button = Button(menu_window_root, text='Save Changes', width=10, command=root.destroy)
+
+
   options_frame_1.pack()
   options_frame_2.pack()
+  options_frame_3.pack()
+  button.pack()
 
 root = Tk()
 #Drag and drop library
