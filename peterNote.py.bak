@@ -1,4 +1,4 @@
-from tkinter import *
+from Tkinter import *
 import database
 import os
 import notes
@@ -65,7 +65,7 @@ def scroll_action(action=0,destination=0,unit=0):
   last_note = note_objects[len(note_objects) - 1]
   if scroll_position[1] > .99 and last_note.get_current_text() != "" and auto_new_note == 1:
     make_new_note()
-    print(scroll_position[1])
+    print scroll_position[1]
 
 def open_search(event):
   global auto_new_note
@@ -161,7 +161,7 @@ root.bind("<Control-f>", open_search)
 auto_new_note = 0
 default_widget_height = 5; 
 
-thex = "\u00D7";
+thex = u"\u00D7";
 close = Button(root, text = thex, command = lambda: closing_action()).pack(side=RIGHT)
 
 vsb.pack(side="right", fill="y")

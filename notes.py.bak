@@ -1,5 +1,5 @@
 import database
-from tkinter import *
+from Tkinter import *
 class Note(object):
 	def __init__(self, widget, default_height, text, db_index=None, ):
 		widget_height = 1#text.count("\n") + 1
@@ -14,7 +14,7 @@ class Note(object):
 		self.widget.configure(background='#fefbae', height=default_height)
 		self.adjust_height()
 	def get_text(self):
-		print((self.text))
+		print(self.text)
 
 	def set_window_name(self, window_name):
 		self.window_name = window_name

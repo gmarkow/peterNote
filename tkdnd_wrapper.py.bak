@@ -1,5 +1,5 @@
 import os
-import tkinter
+import Tkinter
 
 import shutil
 
@@ -82,7 +82,7 @@ class TkDND(object):
 
         A, a, b, D, d, m, T, W, X, Y, x, y = args
 
-        event = tkinter.Event()
+        event = Tkinter.Event()
         event.action = A       # Current action of the drag and drop operation.
         event.action_list = a  # Action list supported by the drag source.
         event.mouse_button = b # Mouse button pressed during the drag and drop.
