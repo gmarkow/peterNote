@@ -36,7 +36,7 @@ def save_current_note(current_note):
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
 	if current_note != '':
-	 	c.execute('INSERT INTO notes_table( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':current_note, 'thetimestamp':datetime.datetime.now()})
+		c.execute('INSERT INTO notes_table( content, date_time ) VALUES( :thecontent, :thetimestamp )', {'thecontent':current_note, 'thetimestamp':datetime.datetime.now()})
 	else:
 		print("nothing to save")
 	conn.commit()
@@ -57,7 +57,7 @@ def update_note(user_data, record_number):
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
- 	c.execute('UPDATE notes_table SET content=:thecontent, date_time=:thetimestamp WHERE index1=:theindex', {'thecontent':user_data, 'thetimestamp':datetime.datetime.now(), 'theindex':record_number})
+	c.execute('UPDATE notes_table SET content=:thecontent, date_time=:thetimestamp WHERE index1=:theindex', {'thecontent':user_data, 'thetimestamp':datetime.datetime.now(), 'theindex':record_number})
 	conn.commit()
 	conn.close()
 
