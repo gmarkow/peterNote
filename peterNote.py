@@ -135,13 +135,17 @@ def open_prefrences():
   note_height.pack()
   autonewnote = Checkbutton(options_frame_3, text="Auto new note:")
   autonewnote.pack()
-  button = Button(menu_window_root, text='Save Changes', width=10, command=root.destroy)
+  button = Button(menu_window_root, text='Save Changes', width=10, command=save_prefrences)
 
 
   options_frame_1.pack()
   options_frame_2.pack()
   options_frame_3.pack()
   button.pack()
+
+def save_prefrences():
+  print('test')
+
 
 root = Tk()
 #Drag and drop library
@@ -169,7 +173,7 @@ canvas.pack(side="left", fill="both", expand=True)
 canvas.create_window((4,4), window=frame, anchor="nw")
 
 frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
-root.bind("n", make_new_note)
+root.bind("<Control-n>", make_new_note)
 
 
 menubar = Menu(root)
