@@ -124,6 +124,11 @@ def create_note_objects(db_response):
 
 
 def open_prefrences():
+    retrived_configs = database.get_configs()
+    current_configs = {}
+    for config in retrived_configs:
+        current_configs[config[0]] = config[1]
+ 
     menu_window_root = Tk()
     menu_window_root.geometry("400x500")
     menu_window_root.configure(background='#fefbae')
@@ -136,13 +141,19 @@ def open_prefrences():
     options_frame_3 = Frame(menu_window_root, background="#ffffff")
 
     note_color = Entry(options_frame_1, width=5)
+    note_color.insert(0, current_configs['note_color'])
     Label(options_frame_1, text='Note color:').pack(side=LEFT)
     note_color.pack()
 
     note_height = Entry(options_frame_2, width=5)
+    note_height.insert(0, current_configs['note_height'])
     Label(options_frame_2, text='Note height:').pack(side=LEFT)
     note_height.pack()
     autonewnote = Checkbutton(options_frame_3, text="Auto new note:")
+    if current_configs['auto_new_note'] == 0:
+        autonewnote.deselect()
+    else:
+        autonewnote.select()
     autonewnote.pack()
     button = Button(menu_window_root, text='Save Changes', width=10, command=save_prefrences)
 
@@ -151,9 +162,11 @@ def open_prefrences():
     options_frame_3.pack()
     button.pack()
 
+    #menu_window_root.protocol("WM_DELETE_WINDOW", save_prefrences(menu_window_root));
+
 
 def save_prefrences():
-    print('test')
+   print('anything') 
 
 
 root = Tk()
@@ -175,7 +188,7 @@ auto_new_note = 1
 default_widget_height = 5;
 
 thex = "\u00D7";
-close = Button(root, text=thex, command=lambda: closing_action()).pack(side=RIGHT)
+root.protocol("WM_DELETE_WINDOW", closing_action);
 
 vsb.pack(side="right", fill="y")
 canvas.pack(side="left", fill="both", expand=True)
@@ -187,6 +200,7 @@ root.bind("<Control-n>", make_new_note)
 menubar = Menu(root)
 menubar.add_command(label="Prefrences", command=open_prefrences)
 
+
 # display the menu
 root.config(menu=menubar)
 
@@ -195,5 +209,4 @@ all_notes = database.get_all_notes()
 note_objects = create_note_objects(all_notes)
 
 populate(note_objects)
-# root.protocol("WM_DELETE_WINDOW", closing_action)
 root.mainloop()

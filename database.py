@@ -4,7 +4,8 @@ import datetime
 
 sqlite_file = 'databaseFiles/peternote.sqlite'    # name of the sqlite database file
 current_note_table = 'current_note'  # name of the table to be created
-notes_table = 'notes_table';
+notes_table = 'notes_table'
+prefrence_table = 'prefrences_table'
 
 if not os.path.exists(sqlite_file):
 	os.mkdir('databaseFiles')
@@ -15,7 +16,17 @@ if not os.path.exists(sqlite_file):
 	c.execute("ALTER TABLE {tn} ADD COLUMN '{cn}' {ct}"\
 	        .format(tn=notes_table, cn='content', ct='STRING'))
 	c.execute("ALTER TABLE {tn} ADD COLUMN '{cn}' {ct}"\
-        .format(tn=notes_table, cn='date_time', ct='DATETIME CURRENT_TIMESTAMP'))
+        	.format(tn=notes_table, cn='date_time', ct='DATETIME CURRENT_TIMESTAMP'))
+	c.execute('CREATE TABLE {tn} ({nf} {ft})'\
+					.format(tn=prefrence_table, nf='index1', ft='INTEGER PRIMARY KEY AUTOINCREMENT'))
+	c.execute("ALTER TABLE {tn} ADD COLUMN '{cn}' {ct}"\
+	        .format(tn=prefrence_table, cn='config', ct='STRING'))
+	c.execute("ALTER TABLE {tn} ADD COLUMN '{cn}' {ct}"\
+        	.format(tn=prefrence_table, cn='setting', ct='STRING'))
+	#default configs....
+	c.execute('INSERT INTO prefrences_table( config, setting ) VALUES( :theconfig, :thevalue )', {'theconfig':'note_color', 'thevalue':'#ffffff'})
+	c.execute('INSERT INTO prefrences_table( config, setting ) VALUES( :theconfig, :thevalue )', {'theconfig':'note_height', 'thevalue':'34'})
+	c.execute('INSERT INTO prefrences_table( config, setting ) VALUES( :theconfig, :thevalue )', {'theconfig':'auto_new_note', 'thevalue':'1'})
 	conn.commit()
 	conn.close()
 
@@ -70,3 +81,25 @@ def search_notes(search_string):
 	conn.commit()
 	conn.close()
 	return response
+
+def get_configs():
+	sqlite_file = 'databaseFiles/peternote.sqlite' 
+	conn = sqlite3.connect(sqlite_file)
+	c = conn.cursor()
+	c.execute('SELECT config, setting FROM prefrences_table')
+	response = c.fetchall()
+	conn.commit()
+	conn.close()
+	return response
+	
+def update_configs(configs):
+	sqlite_file = 'databaseFiles/peternote.sqlite' 
+	conn = sqlite3.connect(sqlite_file)
+	c = conn.cursor()
+	if current_note != '':
+	 	c.execute('UPDATE prefrences_table SET setting=XXXXX WHERE config=:theindex',{'thecontent':user_data,'thetimestamp':datetime.datetime.now(),'theindex':record_number})
+	else:
+		print("nothing to save")
+	conn.commit()
+	conn.close()
+	
