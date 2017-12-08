@@ -1,0 +1,1 @@
+ pyinstaller --add-data /home/greg/Projects/noteTaker/tkdnd2.8/:./tkdnd2.8/ ./peterNote.py  
