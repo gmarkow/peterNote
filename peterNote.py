@@ -5,14 +5,16 @@ import notes
 from tkdnd_wrapper import TkDND
 
 root_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(root_path + '/tkdnd2.8')
 os.environ['TKDND_LIBRARY'] = root_path + '/tkdnd2.8/'
 
 
 # Code from here
 # https://stackoverflow.com/questions/3085696/adding-a-scrollbar-to-a-group-of-widgets-in-tkinter/3092341#3092341
-def populate(note_to_render):
+def populate(note_to_render, edit_notes=0):
     for note in note_to_render:
-        note.widget.insert(END, note.text)
+        if(edit_notes == 0):
+            note.widget.insert(END, note.text)
         note.widget.pack()
         d[note.widget.winfo_name()] = note
         note.widget.bind("<KeyRelease>", key_action)
@@ -70,44 +72,59 @@ def scroll_action(action=0, destination=0, unit=0):
     last_note = note_objects[len(note_objects) - 1]
     if scroll_position[1] > .99 and last_note.get_current_text() != "" and auto_new_note == 1:
         make_new_note()
-        print(scroll_position[1])
 
 
 def open_search(event):
     global auto_new_note
+    global search_open
+    if(search_open == 1):
+        return
     auto_new_note = 0
     search_frame = Frame(canvas, background="#ffffff")
     search_frame.label = "Search"
     search_input = Entry(search_frame, width=300, background="#ffffff")
     search_input.focus()
     search_input.pack()
-    search_frame.pack(side=BOTTOM)
+    search_frame.pack(side=BOTTOM, pady=40)
     search_input.bind('<KeyRelease>', search_notes)
+    search_open = 1
     root.bind('<Key-Escape>', lambda event, sf=search_frame, si=search_input: close_search(sf, si))
 
 
 def close_search(search_frame, search_input):
     global auto_new_note
     global note_objects
+    global search_open
+    global frame
+    search_open = 0
     auto_new_note = 1
     root.unbind("<Key-Escape>")
-    # all_notes = database.get_all_notes()
-    # note_objects = create_note_objects(all_notes)
+    #all_notes = database.get_all_notes()
+    #note_objects = create_note_objects(all_notes)
     search_frame.pack_forget()
-    frame.pack_forget()
-    populate(note_objects)
+    #frame.pack_forget()
+    #clear_notes(note_objects)
+    populate(note_objects, 1)
 
+def clear_notes(notes_to_clear):
+    for note in notes_to_clear:
+        note.widget.pack_forget()
 
 def search_notes(event):
-    search_notes = event.widget.get()
-    response = database.search_notes(search_notes)
+    global search_open
+    if search_open == 0:
+        return
+    the_search_notes = event.widget.get()
+
+    response = database.search_notes(the_search_notes)
     matching_notes = []
     for note_id in response:
         matching_notes.append(note_id[0])
     for note in note_objects:
         if note.db_index not in matching_notes:
             note.widget.pack_forget()
-    print("stpo")
+        else:
+            note.widget.pack()
 
 
 def create_note_objects(db_response):
@@ -155,7 +172,7 @@ def open_prefrences():
     else:
         autonewnote.select()
     autonewnote.pack()
-    button = Button(menu_window_root, text='Save Changes', width=10, command=save_prefrences)
+    button = Button(menu_window_root, text='Save Changes', width=10, command=save_prefrences(current_configs))
 
     options_frame_1.pack()
     options_frame_2.pack()
@@ -165,8 +182,8 @@ def open_prefrences():
     #menu_window_root.protocol("WM_DELETE_WINDOW", save_prefrences(menu_window_root));
 
 
-def save_prefrences():
-   print('anything') 
+def save_prefrences(current_configs):
+    database.update_configs(current_configs)
 
 
 root = Tk()
@@ -176,7 +193,7 @@ canvas = Canvas(root, borderwidth=0, background="#ffffff")
 frame = Frame(canvas, background="#ffffff")
 vsb = Scrollbar(root, orient="vertical", command=scroll_action)
 canvas.configure(yscrollcommand=vsb.set)
-root.geometry("400x500")
+root.geometry("400x800")
 root.configure(background='#fefbae')
 root.title('peterNote')
 root.attributes('-alpha', 0.9)
@@ -185,10 +202,11 @@ root.overrideredirect(1)
 root.bind("<Control-f>", open_search)
 
 auto_new_note = 1
-default_widget_height = 5;
+search_open = 0
+default_widget_height = 5
 
-thex = "\u00D7";
-root.protocol("WM_DELETE_WINDOW", closing_action);
+thex = "\u00D7"
+root.protocol("WM_DELETE_WINDOW", closing_action)
 
 vsb.pack(side="right", fill="y")
 canvas.pack(side="left", fill="both", expand=True)

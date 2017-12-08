@@ -96,10 +96,7 @@ def update_configs(configs):
 	sqlite_file = 'databaseFiles/peternote.sqlite' 
 	conn = sqlite3.connect(sqlite_file)
 	c = conn.cursor()
-	if current_note != '':
-	 	c.execute('UPDATE prefrences_table SET setting=XXXXX WHERE config=:theindex',{'thecontent':user_data,'thetimestamp':datetime.datetime.now(),'theindex':record_number})
-	else:
-		print("nothing to save")
+ 	# c.execute('UPDATE prefrences_table SET setting=XXXXX WHERE config=:theindex',{'thecontent':configs[],'thetimestamp':datetime.datetime.now(),'theindex':record_number})
 	conn.commit()
 	conn.close()
 	
